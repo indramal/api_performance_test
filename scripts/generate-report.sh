@@ -115,6 +115,23 @@ if [ "$RUST_COUNT" -gt 0 ]; then
     echo "" >> "$REPORT_FILE"
 fi
 
+# JVM Results (if any)
+JVM_COUNT=$(jq '[.[] | select(.runtime == "JVM")] | length' "$RESULTS_FILE")
+if [ "$JVM_COUNT" -gt 0 ]; then
+    echo "### JVM Runtime" >> "$REPORT_FILE"
+    echo "" >> "$REPORT_FILE"
+    echo "| Framework | Requests/sec | Transfer/sec | Avg Latency | Stdev | Max | P50 | P75 | P90 | P99 |" >> "$REPORT_FILE"
+    echo "|-----------|--------------|--------------|-------------|-------|-----|-----|-----|-----|-----|" >> "$REPORT_FILE"
+
+    jq -r '.[] | select(.runtime == "JVM") | 
+        "\(.framework) | \(.requests_per_sec) | \(.transfer_per_sec) | \(.latency.avg) | \(.latency.stdev) | \(.latency.max) | \(.latency.percentile_50) | \(.latency.percentile_75) | \(.latency.percentile_90) | \(.latency.percentile_99)"' \
+        "$RESULTS_FILE" | while IFS='|' read -r framework req_sec transfer avg stdev max p50 p75 p90 p99; do
+        echo "| $framework | $req_sec | $transfer | $avg | $stdev | $max | $p50 | $p75 | $p90 | $p99 |" >> "$REPORT_FILE"
+    done
+
+    echo "" >> "$REPORT_FILE"
+fi
+
 # Runtime Comparison
 echo "## Runtime Comparison" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
@@ -123,7 +140,7 @@ echo "" >> "$REPORT_FILE"
 echo "| Runtime | Avg Requests/sec | Frameworks Tested |" >> "$REPORT_FILE"
 echo "|---------|------------------|-------------------|" >> "$REPORT_FILE"
 
-for runtime in "Node.js" "Bun" "Rust"; do
+for runtime in "Node.js" "Bun" "Rust" "JVM"; do
     RUNTIME_COUNT=$(jq --arg rt "$runtime" '[.[] | select(.runtime == $rt)] | length' "$RESULTS_FILE")
     if [ "$RUNTIME_COUNT" -gt 0 ]; then
         AVG_REQ=$(jq --arg rt "$runtime" '[.[] | select(.runtime == $rt) | .requests_per_sec | tonumber] | add / length | round' "$RESULTS_FILE")
