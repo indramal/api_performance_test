@@ -1,0 +1,13 @@
+{
+  "name": "bun-fastify-performance-test",
+  "version": "1.0.0",
+  "description": "Fastify.js on Bun API performance test",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "bun index.js"
+  },
+  "dependencies": {
+    "fastify": "^4.25.0"
+  }
+}

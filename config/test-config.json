@@ -1,0 +1,34 @@
+{
+  "wrk": {
+    "duration": "30s",
+    "threads": 12,
+    "connections": 400,
+    "timeout": "10s"
+  },
+  "ports": {
+    "nodejs": {
+      "express": 3001,
+      "fastify": 3002,
+      "hono": 3003,
+      "nextjs": 3004
+    },
+    "bun": {
+      "express": 3101,
+      "fastify": 3102,
+      "hono": 3103,
+      "elysia": 3104,
+      "nextjs": 3105,
+      "standalone": 3106
+    },
+    "rust": {
+      "axum": 3201,
+      "actix": 3202
+    }
+  },
+  "endpoint": "/api/v1/test",
+  "warmup": {
+    "enabled": true,
+    "duration": "5s",
+    "connections": 10
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "bun-elysia-performance-test",
+  "version": "1.0.0",
+  "description": "Elysia.js API performance test",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "bun index.js"
+  },
+  "dependencies": {
+    "elysia": "^0.8.0"
+  }
+}

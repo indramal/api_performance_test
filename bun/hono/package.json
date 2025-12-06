@@ -1,0 +1,13 @@
+{
+  "name": "bun-hono-performance-test",
+  "version": "1.0.0",
+  "description": "Hono.js on Bun API performance test",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "bun index.js"
+  },
+  "dependencies": {
+    "hono": "^3.11.0"
+  }
+}

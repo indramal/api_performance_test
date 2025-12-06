@@ -1,0 +1,13 @@
+{
+  "name": "fastify-performance-test",
+  "version": "1.0.0",
+  "description": "Fastify.js API performance test",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "fastify": "^4.25.0"
+  }
+}
