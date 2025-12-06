@@ -1,0 +1,129 @@
+name: API Performance Benchmark
+
+on:
+    push:
+        branches: [main, master]
+    pull_request:
+        branches: [main, master]
+    workflow_dispatch:
+
+jobs:
+    benchmark:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "20"
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: latest
+
+            - name: Setup Rust
+              uses: actions-rs/toolchain@v1
+              with:
+                  toolchain: stable
+                  override: true
+
+            - name: Install wrk
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y wrk
+
+            - name: Install jq
+              run: |
+                  sudo apt-get install -y jq
+
+            - name: Install lscpu and system tools
+              run: |
+                  sudo apt-get install -y util-linux pciutils
+
+            - name: Install Node.js dependencies
+              run: |
+                  cd api_performance_test
+
+                  # Install Node.js project dependencies
+                  for dir in nodejs/*/; do
+                    if [ -f "${dir}package.json" ]; then
+                      echo "Installing dependencies in $dir"
+                      cd "$dir"
+                      npm install --production
+                      # Build Next.js projects
+                      if [ -f "next.config.js" ]; then
+                        npm run build
+                      fi
+                      cd ../../
+                    fi
+                  done
+
+            - name: Install Bun dependencies
+              run: |
+                  cd api_performance_test
+
+                  # Install Bun project dependencies
+                  for dir in bun/*/; do
+                    if [ -f "${dir}package.json" ]; then
+                      echo "Installing dependencies in $dir"
+                      cd "$dir"
+                      bun install --production
+                      # Build Next.js projects for Bun
+                      if [ -f "next.config.js" ]; then
+                        bun --bun node_modules/next/dist/bin/next build
+                      fi
+                      cd ../../
+                    fi
+                  done
+
+            - name: Build Rust projects
+              run: |
+                  cd api_performance_test
+
+                  # Build Axum
+                  if [ -d "rust/axum" ]; then
+                    echo "Building Rust Axum project"
+                    cd rust/axum
+                    cargo build --release
+                    cd ../../
+                  fi
+
+                  # Build Actix
+                  if [ -d "rust/actix" ]; then
+                    echo "Building Rust Actix project"
+                    cd rust/actix
+                    cargo build --release
+                    cd ../../
+                  fi
+
+            - name: Make scripts executable
+              run: |
+                  chmod +x api_performance_test/scripts/*.sh
+
+            - name: Run benchmarks
+              run: |
+                  cd api_performance_test
+                  bash scripts/run-benchmarks.sh
+
+            - name: Upload benchmark results
+              uses: actions/upload-artifact@v4
+              with:
+                  name: performance-report-${{ github.sha }}
+                  path: api_performance_test/results/performance-report-*.md
+                  retention-days: 90
+
+            - name: Display report summary
+              if: always()
+              run: |
+                  cd api_performance_test
+                  LATEST_REPORT=$(ls -t results/performance-report-*.md | head -n 1)
+                  if [ -f "$LATEST_REPORT" ]; then
+                    echo "=== Performance Report Summary ==="
+                    head -n 50 "$LATEST_REPORT"
+                    echo "..."
+                    echo "Full report uploaded as artifact"
+                  fi
