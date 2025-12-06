@@ -46,8 +46,6 @@ jobs:
 
             - name: Install Node.js dependencies
               run: |
-                  cd api_performance_test
-
                   # Install Node.js project dependencies
                   for dir in nodejs/*/; do
                     if [ -f "${dir}package.json" ]; then
@@ -64,8 +62,6 @@ jobs:
 
             - name: Install Bun dependencies
               run: |
-                  cd api_performance_test
-
                   # Install Bun project dependencies
                   for dir in bun/*/; do
                     if [ -f "${dir}package.json" ]; then
@@ -82,8 +78,6 @@ jobs:
 
             - name: Build Rust projects
               run: |
-                  cd api_performance_test
-
                   # Build Axum
                   if [ -d "rust/axum" ]; then
                     echo "Building Rust Axum project"
@@ -102,24 +96,22 @@ jobs:
 
             - name: Make scripts executable
               run: |
-                  chmod +x api_performance_test/scripts/*.sh
+                  chmod +x scripts/*.sh
 
             - name: Run benchmarks
               run: |
-                  cd api_performance_test
                   bash scripts/run-benchmarks.sh
 
             - name: Upload benchmark results
               uses: actions/upload-artifact@v4
               with:
                   name: performance-report-${{ github.sha }}
-                  path: api_performance_test/results/performance-report-*.md
+                  path: results/performance-report-*.md
                   retention-days: 90
 
             - name: Display report summary
               if: always()
               run: |
-                  cd api_performance_test
                   LATEST_REPORT=$(ls -t results/performance-report-*.md | head -n 1)
                   if [ -f "$LATEST_REPORT" ]; then
                     echo "=== Performance Report Summary ==="
