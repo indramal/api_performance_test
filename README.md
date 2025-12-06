@@ -1,6 +1,6 @@
 # API Performance Testing Suite
 
-A comprehensive performance benchmarking suite for comparing API frameworks across Node.js, Bun, and Rust runtimes.
+A comprehensive performance benchmarking suite for comparing API frameworks across Node.js, Bun, Rust, and JVM runtimes.
 
 ## 📋 Overview
 
@@ -24,6 +24,9 @@ This project provides automated performance testing for the following frameworks
 - **Axum** - Ergonomic web framework built on Tokio
 - **Actix-web** - Powerful, pragmatic web framework
 
+### JVM Runtime
+- **Spring Boot (Kotlin)** - Modern enterprise framework with Kotlin
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -31,6 +34,7 @@ This project provides automated performance testing for the following frameworks
 - **Node.js** (v18 or later)
 - **Bun** (latest version)
 - **Rust** (stable toolchain)
+- **Java** (JDK 21 for Spring Boot)
 - **wrk** - HTTP benchmarking tool
 - **jq** - JSON processor for reports
 
@@ -85,6 +89,9 @@ done
 # Rust projects
 cd rust/axum && cargo build --release && cd ../../
 cd rust/actix && cargo build --release && cd ../../
+
+# Kotlin projects
+cd kotlin/springboot && ./gradlew build && cd ../../
 ```
 
 2. **Make scripts executable:**
@@ -154,6 +161,7 @@ api_performance_test/
 ├── nodejs/                  # Node.js implementations
 ├── bun/                     # Bun implementations
 ├── rust/                    # Rust implementations
+├── kotlin/                  # Kotlin/JVM implementations
 └── results/                 # Generated reports
 ```
 

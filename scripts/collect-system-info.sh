@@ -82,6 +82,14 @@ else
     echo "- Rust: Not installed"
 fi
 
+# Java
+if command -v java &> /dev/null; then
+    JAVA_VERSION=$(java -version 2>&1 | head -n 1 | awk -F '"' '{print $2}')
+    echo "- Java: $JAVA_VERSION"
+else
+    echo "- Java: Not installed"
+fi
+
 # wrk
 if command -v wrk &> /dev/null; then
     echo "- wrk: $(wrk --version 2>&1 | head -n 1)"

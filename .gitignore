@@ -12,6 +12,18 @@ target/
 Cargo.lock
 **/*.rs.bk
 
+# Kotlin/Java
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+*.class
+*.jar
+*.war
+*.ear
+!gradle-wrapper.jar
+.idea/
+*.iml
+
 # Build outputs
 dist/
 build/

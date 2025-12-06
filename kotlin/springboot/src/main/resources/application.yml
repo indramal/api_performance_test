@@ -1,0 +1,13 @@
+server:
+  port: ${PORT:3301}
+
+spring:
+  application:
+    name: springboot-performance-test
+  main:
+    banner-mode: off
+
+logging:
+  level:
+    root: WARN
+    com.performance.test: INFO

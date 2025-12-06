@@ -23,6 +23,9 @@
     "rust": {
       "axum": 3201,
       "actix": 3202
+    },
+    "kotlin": {
+      "springboot": 3301
     }
   },
   "endpoint": "/api/v1/test",

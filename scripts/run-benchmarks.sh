@@ -248,6 +248,25 @@ else
     echo ""
 fi
 
+echo "=== Kotlin Framework Tests ==="
+echo ""
+
+# Check if Java is installed
+if command -v java &> /dev/null; then
+    # Spring Boot
+    cd "$PROJECT_ROOT/kotlin/springboot"
+    echo -e "${YELLOW}Testing: Kotlin - Spring Boot${NC}"
+    echo "  Building (production mode)..."
+    ./gradlew build -x test --no-daemon > /dev/null 2>&1
+    run_benchmark "Kotlin - Spring Boot" "JVM" "Spring Boot" \
+        $(jq -r '.ports.kotlin.springboot' "$CONFIG_FILE") \
+        "java -jar build/libs/springboot-1.0.0.jar" \
+        "$PROJECT_ROOT/kotlin/springboot"
+else
+    echo -e "${YELLOW}Java not installed, skipping Kotlin tests${NC}"
+    echo ""
+fi
+
 cd "$PROJECT_ROOT"
 
 echo -e "${GREEN}=== All benchmarks completed ===${NC}"
