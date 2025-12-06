@@ -8,6 +8,6 @@
     "start": "bun index.js"
   },
   "dependencies": {
-    "hono": "^3.11.0"
+    "hono": "^4.0.0"
   }
 }
