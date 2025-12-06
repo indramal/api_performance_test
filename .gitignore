@@ -68,5 +68,3 @@ results/*.txt
 nodejs/**/.git
 bun/**/.git
 rust/**/.git
-
-.github
