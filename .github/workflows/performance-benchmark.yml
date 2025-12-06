@@ -1,10 +1,6 @@
 name: API Performance Benchmark
 
 on:
-  push:
-    branches: [main, master]
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -14,6 +10,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -118,12 +116,28 @@ jobs:
         run: |
           bash scripts/run-benchmarks.sh
 
-      - name: Upload benchmark results
+      - name: Upload benchmark results as artifact
         uses: actions/upload-artifact@v4
         with:
           name: performance-report-${{ github.sha }}
           path: results/performance-report-*.md
           retention-days: 90
+
+      - name: Commit report to repository
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add only the generated reports
+          git add results/performance-report-*.md
+
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No new reports to commit"
+          else
+            git commit -m "Add performance benchmark report - $(date '+%Y-%m-%d %H:%M:%S')"
+            git push
+          fi
 
       - name: Display report summary
         if: always()
@@ -133,5 +147,5 @@ jobs:
             echo "=== Performance Report Summary ==="
             head -n 50 "$LATEST_REPORT"
             echo "..."
-            echo "Full report uploaded as artifact"
+            echo "Full report uploaded as artifact and committed to repository"
           fi
